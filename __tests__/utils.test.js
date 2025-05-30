@@ -1,5 +1,8 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate,
+  compatibleArticleData,
+  compatibleCommentData,
+  addArticleIdToComments,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -37,4 +40,222 @@ describe("convertTimestampToDate", () => {
     expect(result).toEqual(expected);
   });
 });
-
+describe("compatibleArticleData", () => {
+  test("returns an empty array when passed an empty array as an argument", () => {
+    const actual = compatibleArticleData([]);
+    const expected = [];
+    expect(actual).toEqual(expected);
+  });
+  test("returns the correct array when passed an array with only one object", () => {
+    const input = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    const actual = compatibleArticleData(input);
+    const expected = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: new Date(1594329060000),
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    expect(actual).toEqual(expected);
+  });
+  test("does not mutate the original array", () => {
+    const input = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    const inputCopy = [...input];
+    compatibleArticleData(input);
+    expect(input).toEqual(inputCopy);
+  });
+  test("returns the correct array when passed an array with only one object", () => {
+    const input = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+      {
+        title: "Sony Vaio; or, The Laptop",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+        created_at: 1602828180000,
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    const actual = compatibleArticleData(input);
+    const expected = [
+      {
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: new Date(1594329060000),
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+      {
+        title: "Sony Vaio; or, The Laptop",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+        created_at: new Date(1602828180000),
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    expect(actual).toEqual(expected);
+  });
+});
+describe("compatibleCommentData", () => {
+  test("returns an empty array when passed an empty array as an argument", () => {
+    const actual = compatibleCommentData([]);
+    const expected = [];
+    expect(actual).toEqual(expected);
+  });
+  test("returns the correct array when passed an array with only one object", () => {
+    const input = [
+      {
+        article_title: "They're not exactly dogs, are they?",
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        created_at: 1586179020000,
+      },
+    ];
+    const actual = compatibleCommentData(input);
+    const expected = [
+      {
+        article_title: "They're not exactly dogs, are they?",
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        created_at: new Date(1586179020000),
+      },
+    ];
+    expect(actual).toEqual(expected);
+  });
+  test("does not mutate the original array", () => {
+    const input = [
+      {
+        article_title: "They're not exactly dogs, are they?",
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        created_at: 1586179020000,
+      },
+    ];
+    const inputCopy = [...input];
+    compatibleCommentData(input);
+    expect(input).toEqual(inputCopy);
+  });
+  test("returns the correct array when passed an array with multiple objects", () => {
+    const input = [
+      {
+        article_title: "They're not exactly dogs, are they?",
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        created_at: 1586179020000,
+      },
+      {
+        article_title: "Living in the shadow of a great man",
+        body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        votes: 14,
+        author: "butter_bridge",
+        created_at: 1604113380000,
+      },
+    ];
+    const actual = compatibleCommentData(input);
+    const expected = [
+      {
+        article_title: "They're not exactly dogs, are they?",
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        created_at: new Date(1586179020000),
+      },
+      {
+        article_title: "Living in the shadow of a great man",
+        body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        votes: 14,
+        author: "butter_bridge",
+        created_at: new Date(1604113380000),
+      },
+    ];
+    expect(actual).toEqual(expected);
+  });
+});
+describe("addArticleIdToComments", () => {
+  const insertedArticles = [
+    {
+      article_id: 1,
+      title: "Article one",
+    },
+    {
+      article_id: 2,
+      title: "Article two",
+    },
+  ];
+  test("returns a new array", () => {
+    const commentsData = [
+      {
+        article_title: "Article one",
+        body: "Body one",
+      },
+    ];
+    const result = addArticleIdToComments(commentsData, insertedArticles);
+    expect(result).not.toBe(commentsData);
+  });
+  test("returns the correct array with article_id based on article title when passed an array of one object", () => {
+    const commentsData = [{ article_title: "Article one", body: "Body one" }];
+    const expected = [{ article_id: 1, body: "Body one" }];
+    const actual = addArticleIdToComments(commentsData, insertedArticles);
+    expect(actual).toEqual(expected);
+  });
+  test("returns the correct array with article_id based on article title when passed an array of multiple objects", () => {
+    const commentsData = [
+      { article_title: "Article one", body: "Body one" },
+      { article_title: "Article two", body: "Body two" },
+    ];
+    const expected = [
+      { article_id: 1, body: "Body one" },
+      { article_id: 2, body: "Body two" },
+    ];
+    const actual = addArticleIdToComments(commentsData, insertedArticles);
+    expect(actual).toEqual(expected);
+  });
+});
