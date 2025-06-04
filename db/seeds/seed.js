@@ -1,11 +1,6 @@
 const db = require("../connection");
 const format = require("pg-format");
-const {
-  convertTimestampToDate,
-  compatibleArticleData,
-  compatibleCommentData,
-  addArticleIdToComments,
-} = require("./utils.js");
+const { compatibleData, addArticleIdToComments } = require("./utils.js");
 const articleData = require("../data/development-data/articles.js");
 const commentData = require("../data/development-data/comments.js");
 const topicData = require("../data/development-data/topics.js");
@@ -91,7 +86,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(usersInsert);
     })
     .then(() => {
-      const formattedArticlesData = compatibleArticleData(articleData);
+      const formattedArticlesData = compatibleData(articleData);
       const formattedArticles = formattedArticlesData.map(
         ({
           title,
@@ -129,9 +124,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(({ rows }) => {
       const formattedCommentsWithId = addArticleIdToComments(commentData, rows);
-      const formattedCommentsData = compatibleCommentData(
-        formattedCommentsWithId
-      );
+      const formattedCommentsData = compatibleData(formattedCommentsWithId);
       const formattedComments = formattedCommentsData.map(
         ({ article_id, body, votes, author, created_at }) => {
           return [article_id, body, votes, author, created_at];

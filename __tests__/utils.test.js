@@ -1,7 +1,6 @@
 const {
   convertTimestampToDate,
-  compatibleArticleData,
-  compatibleCommentData,
+  compatibleData,
   addArticleIdToComments,
 } = require("../db/seeds/utils");
 
@@ -40,9 +39,9 @@ describe("convertTimestampToDate", () => {
     expect(result).toEqual(expected);
   });
 });
-describe("compatibleArticleData", () => {
+describe("compatibleData", () => {
   test("returns an empty array when passed an empty array as an argument", () => {
-    const actual = compatibleArticleData([]);
+    const actual = compatibleData([]);
     const expected = [];
     expect(actual).toEqual(expected);
   });
@@ -59,7 +58,7 @@ describe("compatibleArticleData", () => {
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       },
     ];
-    const actual = compatibleArticleData(input);
+    const actual = compatibleData(input);
     const expected = [
       {
         title: "Living in the shadow of a great man",
@@ -74,24 +73,7 @@ describe("compatibleArticleData", () => {
     ];
     expect(actual).toEqual(expected);
   });
-  test("does not mutate the original array", () => {
-    const input = [
-      {
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
-        created_at: 1594329060000,
-        votes: 100,
-        article_img_url:
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-      },
-    ];
-    const inputCopy = [...input];
-    compatibleArticleData(input);
-    expect(input).toEqual(inputCopy);
-  });
-  test("returns the correct array when passed an array with only one object", () => {
+  test("returns the correct array when passed an array with multiple objects", () => {
     const input = [
       {
         title: "Living in the shadow of a great man",
@@ -114,7 +96,7 @@ describe("compatibleArticleData", () => {
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       },
     ];
-    const actual = compatibleArticleData(input);
+    const actual = compatibleData(input);
     const expected = [
       {
         title: "Living in the shadow of a great man",
@@ -139,84 +121,22 @@ describe("compatibleArticleData", () => {
     ];
     expect(actual).toEqual(expected);
   });
-});
-describe("compatibleCommentData", () => {
-  test("returns an empty array when passed an empty array as an argument", () => {
-    const actual = compatibleCommentData([]);
-    const expected = [];
-    expect(actual).toEqual(expected);
-  });
-  test("returns the correct array when passed an array with only one object", () => {
-    const input = [
-      {
-        article_title: "They're not exactly dogs, are they?",
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        votes: 16,
-        author: "butter_bridge",
-        created_at: 1586179020000,
-      },
-    ];
-    const actual = compatibleCommentData(input);
-    const expected = [
-      {
-        article_title: "They're not exactly dogs, are they?",
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        votes: 16,
-        author: "butter_bridge",
-        created_at: new Date(1586179020000),
-      },
-    ];
-    expect(actual).toEqual(expected);
-  });
   test("does not mutate the original array", () => {
     const input = [
       {
-        article_title: "They're not exactly dogs, are they?",
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        votes: 16,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
         author: "butter_bridge",
-        created_at: 1586179020000,
+        body: "I find this existence challenging",
+        created_at: 1594329060000,
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       },
     ];
     const inputCopy = [...input];
-    compatibleCommentData(input);
+    compatibleData(input);
     expect(input).toEqual(inputCopy);
-  });
-  test("returns the correct array when passed an array with multiple objects", () => {
-    const input = [
-      {
-        article_title: "They're not exactly dogs, are they?",
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        votes: 16,
-        author: "butter_bridge",
-        created_at: 1586179020000,
-      },
-      {
-        article_title: "Living in the shadow of a great man",
-        body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-        votes: 14,
-        author: "butter_bridge",
-        created_at: 1604113380000,
-      },
-    ];
-    const actual = compatibleCommentData(input);
-    const expected = [
-      {
-        article_title: "They're not exactly dogs, are they?",
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        votes: 16,
-        author: "butter_bridge",
-        created_at: new Date(1586179020000),
-      },
-      {
-        article_title: "Living in the shadow of a great man",
-        body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-        votes: 14,
-        author: "butter_bridge",
-        created_at: new Date(1604113380000),
-      },
-    ];
-    expect(actual).toEqual(expected);
   });
 });
 describe("addArticleIdToComments", () => {

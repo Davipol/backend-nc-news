@@ -9,12 +9,8 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
-exports.compatibleArticleData = (articleData) => {
-  return articleData.map(exports.convertTimestampToDate);
-};
-
-exports.compatibleCommentData = (commentData) => {
-  return commentData.map(exports.convertTimestampToDate);
+exports.compatibleData = (data) => {
+  return data.map(exports.convertTimestampToDate);
 };
 
 exports.addArticleIdToComments = (commentsData, insertedArticles) => {
