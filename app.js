@@ -4,8 +4,9 @@ const db = require("./db/connection.js");
 
 const { getApi } = require("./controllers/api.controller.js");
 const { getTopics } = require("./controllers/topics.controller.js");
+const { getArticles } = require("./controllers/articles.controller.js");
 
 app.get("/api", getApi);
 app.get("/api/topics", getTopics);
-
+app.get("/api/articles", getArticles);
 module.exports = app;
