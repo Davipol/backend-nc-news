@@ -69,3 +69,19 @@ describe("GET /api/articles", () => {
       });
   });
 });
+describe("GET /api/users", () => {
+  test("Responds with an object with the key of users and the value of an array of objects with properties: username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body.users;
+        expect(users.length).not.toBe(0);
+        users.forEach(({ username, name, avatar_url }) => {
+          expect(typeof username).toBe("string");
+          expect(typeof name).toBe("string");
+          expect(typeof avatar_url).toBe("string");
+        });
+      });
+  });
+});
