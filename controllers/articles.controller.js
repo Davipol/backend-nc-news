@@ -22,9 +22,31 @@ const getArticles = (request, response, next) => {
 const getArticleById = (request, response, next) => {
   const { article_id } = request.params;
   selectArticleById(article_id)
-    .then((article) => {
-      response.status(200).send({ article: article });
-    })
+    .then(
+      ({
+        article_id,
+        title,
+        topic,
+        author,
+        body,
+        created_at,
+        votes,
+        article_img_url,
+      }) => {
+        response.status(200).send({
+          article: {
+            author,
+            title,
+            article_id,
+            body,
+            topic,
+            created_at,
+            votes,
+            article_img_url,
+          },
+        });
+      }
+    )
     .catch((err) => {
       next(err);
     });

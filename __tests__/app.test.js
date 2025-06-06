@@ -126,7 +126,54 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe(`No article found for article_id: 999`);
+        expect(body.msg).toBe(`No article found`);
       });
+  });
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("Responds with an object with the key of comments and the value of an array of comments for the given article_id, each one with properties: comment_id, votes, created_at, author, body, article_id. Most recent comments should be served first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(typeof body).toBe("object");
+          const comments = body.comments;
+          expect(comments.length).not.toBe(0);
+          comments.forEach(
+            ({ comment_id, votes, created_at, author, body, article_id }) => {
+              expect(typeof comment_id).toBe("number");
+              expect(typeof votes).toBe("number");
+              expect(typeof created_at).toBe("string");
+              expect(typeof author).toBe("string");
+              expect(typeof body).toBe("string");
+              expect(typeof article_id).toBe("number");
+            }
+          );
+        });
+    });
+    test("Response with an empty array if article exists, but has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const comments = body.comments;
+          expect(comments).toEqual([]);
+        });
+    });
+    test("Status: 400, responds with an error message if passed a bad article ID", () => {
+      return request(app)
+        .get("/api/articles/NotAnId/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: Bad Request");
+        });
+    });
+    test("Status: 404, responds with an error message if passed an article_id which does not exist", () => {
+      return request(app)
+        .get("/api/articles/99/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No article found");
+        });
+    });
   });
 });
