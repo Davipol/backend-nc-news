@@ -150,7 +150,7 @@ describe("GET /api/articles/:article_id", () => {
           );
         });
     });
-    test("Response with an empty array if article exists, but has no comments", () => {
+    test("Responds with an empty array if article exists, but has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
@@ -175,5 +175,73 @@ describe("GET /api/articles/:article_id", () => {
           expect(body.msg).toBe("No article found");
         });
     });
+  });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST 201 : Responds with a posted comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({
+        username: "butter_bridge",
+        body: "git manager",
+      })
+      .expect(201)
+      .then(({ body: commentBody }) => {
+        expect(typeof commentBody).toBe("object");
+        const { comment_id, body, votes, author, created_at, article_id } =
+          commentBody.comment;
+        expect(typeof comment_id).toBe("number");
+        expect(typeof article_id).toBe("number");
+        expect(typeof body).toBe("string");
+        expect(typeof votes).toBe("number");
+        expect(typeof author).toBe("string");
+        expect(typeof created_at).toBe("string");
+      });
+  });
+  test("POST 400: Responds with an error message if passed a bad article_id", () => {
+    return request(app)
+      .post("/api/articles/NotAnId/comments")
+      .send({
+        username: "butter_bridge",
+        body: "invalid article_id test",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article_id");
+      });
+  });
+  test("POST 404: Responds with an error message if passed an article_id that is not present", () => {
+    return request(app)
+      .post("/api/articles/99/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Non-existent article_id test",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No article found");
+      });
+  });
+  test("POST 400: Responds with an error message if article_id is missing", () => {
+    return request(app)
+      .post("/api/articles/99/comments")
+      .send({
+        body: "Missing username test",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please insert username and body");
+      });
+  });
+  test("POST 400: Responds with an error message if body is missing", () => {
+    return request(app)
+      .post("/api/articles/99/comments")
+      .send({
+        article_id: 2,
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please insert username and body");
+      });
   });
 });

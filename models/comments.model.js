@@ -21,4 +21,14 @@ const selectCommentsByArticleId = (article_id) => {
   });
 };
 
-module.exports = { selectCommentsByArticleId };
+const insertCommentToArticle = (article_id, username, body) => {
+  return checkArticleExists(article_id).then(() => {
+    const queryString = `INSERT INTO comments (author, body, article_id) VALUES($1, $2, $3) RETURNING *`;
+    return db
+      .query(queryString, [username, body, article_id])
+      .then(({ rows }) => {
+        return rows[0];
+      });
+  });
+};
+module.exports = { selectCommentsByArticleId, insertCommentToArticle };

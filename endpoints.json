@@ -67,5 +67,22 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to the specified article. Requires a request body and with username and body fields",
+    "exampleRequest": {
+      "username": "butter_bridge",
+      "body": "This morning, I showered for nine minutes."
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 45,
+        "body": "This morning, I showered for nine minutes.",
+        "article_id": 2,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2020-11-03T21:00:00.000Z"
+      }
+    }
   }
 }

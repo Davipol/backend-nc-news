@@ -17,6 +17,7 @@ const {
 } = require("./errors.js");
 const {
   getCommentsByArticleId,
+  postCommentToArticle,
 } = require("./controllers/comments.controller.js");
 
 app.get("/api", getApi);
@@ -25,6 +26,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.use(express.json());
+app.post("/api/articles/:article_id/comments", postCommentToArticle);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomErrors);
