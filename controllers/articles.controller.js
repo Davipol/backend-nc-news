@@ -1,5 +1,8 @@
 const seed = require("../db/seeds/seed.js");
-const { fetchArticles } = require("../models/articles.model");
+const {
+  selectArticles,
+  selectArticleById,
+} = require("../models/articles.model");
 const {
   handleServerErrors,
   handleCustomErrors,
@@ -7,7 +10,7 @@ const {
 } = require("../errors.js");
 
 const getArticles = (request, response, next) => {
-  fetchArticles()
+  selectArticles()
     .then((articles) => {
       response.status(200).send({ articles });
     })
@@ -16,4 +19,15 @@ const getArticles = (request, response, next) => {
     });
 };
 
-module.exports = { getArticles };
+const getArticleById = (request, response, next) => {
+  const { article_id } = request.params;
+  selectArticleById(article_id)
+    .then((article) => {
+      response.status(200).send({ article: article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticles, getArticleById };

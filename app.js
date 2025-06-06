@@ -4,8 +4,12 @@ const db = require("./db/connection.js");
 
 const { getApi } = require("./controllers/api.controller.js");
 const { getTopics } = require("./controllers/topics.controller.js");
-const { getArticles } = require("./controllers/articles.controller.js");
+const {
+  getArticles,
+  getArticleById,
+} = require("./controllers/articles.controller.js");
 const { getUsers } = require("./controllers/users.controller.js");
+
 const {
   handleServerErrors,
   handlePsqlErrors,
@@ -16,6 +20,7 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/users", getUsers);
+app.get("/api/articles/:article_id", getArticleById);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomErrors);

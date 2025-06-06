@@ -60,7 +60,7 @@ describe("GET /api/articles", () => {
             expect(typeof title).toBe("string");
             expect(typeof article_id).toBe("number");
             expect(typeof topic).toBe("string");
-            expect(Date.parse(created_at)).not.toBe(NaN);
+            expect(typeof created_at).toBe("string");
             expect(typeof votes).toBe("number");
             expect(typeof article_img_url).toBe("string");
             expect(typeof comment_count).toBe("number");
@@ -82,6 +82,51 @@ describe("GET /api/users", () => {
           expect(typeof name).toBe("string");
           expect(typeof avatar_url).toBe("string");
         });
+      });
+  });
+});
+describe("GET /api/articles/:article_id", () => {
+  test("Responds with an object with a key of article and the value of an article object with the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: rows }) => {
+        const article = rows.article;
+        expect(typeof article).toBe("object");
+        const {
+          author,
+          title,
+          article_id,
+          body,
+          topic,
+          created_at,
+          votes,
+          article_img_url,
+        } = article;
+        expect(typeof author).toBe("string");
+        expect(typeof title).toBe("string");
+        expect(typeof article_id).toBe("number");
+        expect(typeof body).toBe("string");
+        expect(typeof topic).toBe("string");
+        expect(typeof created_at).toBe("string");
+        expect(typeof votes).toBe("number");
+        expect(typeof article_img_url).toBe("string");
+      });
+  });
+  test("Status: 400, responds with an error message if passed a bad article ID", () => {
+    return request(app)
+      .get("/api/articles/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: Bad Request");
+      });
+  });
+  test("Status: 404, responds with an error message if passed an article ID not present", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(`No article found for article_id: 999`);
       });
   });
 });

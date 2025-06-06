@@ -1,14 +1,18 @@
 const app = require("./app.js");
 
 exports.handleCustomErrors = (err, request, response, next) => {
-  if (err.status) {
-    response.status(err.status).send({ msg: "There was an error" });
-  } else next(err);
+  if (err.status && err.msg) {
+    response.status(err.status).send({ msg: err.msg });
+  } else {
+    next(err);
+  }
 };
 
 exports.handlePsqlErrors = (err, request, response, next) => {
   if (err.code === "22P02") {
-    response.status(400).send({ msg: "Bad Request" });
+    response.status(400).send({ msg: "Error: Bad Request" });
+  } else {
+    next(err);
   }
 };
 
