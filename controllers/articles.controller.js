@@ -2,6 +2,7 @@ const seed = require("../db/seeds/seed.js");
 const {
   selectArticles,
   selectArticleById,
+  updateVotesToArticle,
 } = require("../models/articles.model");
 const {
   handleServerErrors,
@@ -52,4 +53,16 @@ const getArticleById = (request, response, next) => {
     });
 };
 
-module.exports = { getArticles, getArticleById };
+const addVotesToArticle = (request, response, next) => {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+  updateVotesToArticle(article_id, inc_votes)
+    .then((article) => {
+      response.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticles, getArticleById, addVotesToArticle };

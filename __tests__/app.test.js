@@ -118,7 +118,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/notAnId")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Error: Bad Request");
+        expect(body.msg).toBe("Bad Request");
       });
   });
   test("Status: 404, responds with an error message if passed an article ID not present", () => {
@@ -164,7 +164,7 @@ describe("GET /api/articles/:article_id", () => {
         .get("/api/articles/NotAnId/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Error: Bad Request");
+          expect(body.msg).toBe("Bad Request");
         });
     });
     test("Status: 404, responds with an error message if passed an article_id which does not exist", () => {
@@ -242,6 +242,78 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Please insert username and body");
+      });
+  });
+});
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH 200: Responds with the updated article with updated votes", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: 10,
+      })
+      .expect(200)
+      .then(({ body: articleBody }) => {
+        const {
+          author,
+          title,
+          article_id,
+          body,
+          topic,
+          created_at,
+          votes,
+          article_img_url,
+        } = articleBody.article;
+        expect(typeof author).toBe("string");
+        expect(typeof title).toBe("string");
+        expect(typeof article_id).toBe("number");
+        expect(typeof body).toBe("string");
+        expect(typeof topic).toBe("string");
+        expect(typeof created_at).toBe("string");
+        expect(typeof votes).toBe("number");
+        expect(typeof article_img_url).toBe("string");
+      });
+  });
+  test("PATCH 400: Responds with an error message if inc_votes is not a number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: "NotANumber",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("PATCH 400: Responds with an error message if inc_votes is missing", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("PATCH 400: Responds with an error message if article_id is not a number", () => {
+    return request(app)
+      .patch("/api/articles/notANumber")
+      .send({
+        inc_votes: 10,
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("PATCH 404: Responds with an error message if article_id does not exist", () => {
+    return request(app)
+      .patch("/api/articles/999")
+      .send({
+        inc_votes: 10,
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
       });
   });
 });

@@ -7,6 +7,7 @@ const { getTopics } = require("./controllers/topics.controller.js");
 const {
   getArticles,
   getArticleById,
+  addVotesToArticle,
 } = require("./controllers/articles.controller.js");
 const { getUsers } = require("./controllers/users.controller.js");
 
@@ -28,6 +29,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.use(express.json());
 app.post("/api/articles/:article_id/comments", postCommentToArticle);
+app.patch("/api/articles/:article_id", addVotesToArticle);
 
 app.use(handlePsqlErrors);
 app.use(handleCustomErrors);
