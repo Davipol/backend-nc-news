@@ -122,6 +122,36 @@ describe("GET /api/articles with sorting and ordering", () => {
       });
   });
 });
+describe("GET /api/articles with topic query", () => {
+  test("GET 200: responds with the articles about specified topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesByTopic = body.articles;
+        expect(articlesByTopic.length).not.toBe(0);
+        articlesByTopic.forEach((article) => {
+          expect(article).toHaveProperty("topic", "mitch");
+        });
+      });
+  });
+  test("GET 200: responds with an empty array when passed a valid topic with no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
+  test("GET 404: responds with an error message when the topic does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=nonExistentTopic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
+});
 describe("GET /api/users", () => {
   test("GET 200: Responds with an object with the key of users and the value of an array of objects with properties: username, name, avatar_url", () => {
     return request(app)

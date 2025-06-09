@@ -1,6 +1,6 @@
 const db = require("../db/connection.js");
 
-const selectArticles = (sort_by = "created_at", order = "desc") => {
+const selectArticles = (sort_by = "created_at", order = "desc", topic) => {
   const validQueriesOptions = [
     "author",
     "title",
@@ -12,20 +12,22 @@ const selectArticles = (sort_by = "created_at", order = "desc") => {
     "comment_count",
   ];
   const validOrderOptions = ["asc", "desc"];
+
   if (!validQueriesOptions.includes(sort_by)) {
     return Promise.reject({
       status: 400,
       msg: "Invalid sort_by query",
     });
   }
+
   if (!validOrderOptions.includes(order.toLowerCase())) {
     return Promise.reject({
       status: 400,
       msg: "Invalid order query",
     });
   }
-
-  const queryString = `
+  const values = [];
+  let queryString = `
   SELECT 
   articles.author, 
   articles.title, 
@@ -37,9 +39,28 @@ const selectArticles = (sort_by = "created_at", order = "desc") => {
   COUNT (comments.comment_id)::INT AS comment_count 
   FROM articles 
   LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id
+   `;
+
+  if (topic) {
+    queryString += `WHERE articles.topic = $1 `;
+    values.push(topic);
+  }
+
+  queryString += `GROUP BY articles.article_id 
   ORDER BY ${sort_by} ${order.toUpperCase()};`;
-  return db.query(queryString).then(({ rows }) => {
+
+  return db.query(queryString, values).then(({ rows }) => {
+    if (rows.length === 0 && topic) {
+      return db
+        .query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+        .then(({ rows }) => {
+          if (rows.length === 0) {
+            return Promise.reject({ status: 404, msg: "Topic not found" });
+          } else {
+            return [];
+          }
+        });
+    }
     return rows;
   });
 };
