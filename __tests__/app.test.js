@@ -76,9 +76,9 @@ describe("GET /api/articles with sorting and ordering", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toBeSortedBy("title", {
-          descending: true,
-        });
+        const titles = articles.map((article) => article.title);
+        const sortedTitles = [...titles].sort((a, b) => b.localeCompare(a));
+        expect(titles).toEqual(sortedTitles);
       });
   });
   test("GET 200: sorts articles by votes in ascending order", () => {
@@ -87,7 +87,9 @@ describe("GET /api/articles with sorting and ordering", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toBeSortedBy("votes", { ascending: true });
+        const votes = articles.map((article) => article.votes);
+        const sortedVotes = [...votes].sort((a, b) => a - b);
+        expect(votes).toEqual(sortedVotes);
       });
   });
   test("GET 200: defaults to descending order if order not specified", () => {
@@ -96,7 +98,11 @@ describe("GET /api/articles with sorting and ordering", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toBeSortedBy("created_at", { descending: true });
+        const dates = articles.map((article) =>
+          new Date(article.created_at).getTime()
+        );
+        const sortedDates = [...dates].sort((a, b) => b - a);
+        expect(dates).toEqual(sortedDates);
       });
   });
   test("GET 400: responds with error for invalid sort_by column", () => {
