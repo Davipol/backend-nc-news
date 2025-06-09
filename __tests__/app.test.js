@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
+  test("GET 200: Responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -23,7 +23,7 @@ describe("GET /api", () => {
   });
 });
 describe("GET /api/topics", () => {
-  test("200 - Responds with an object with the key of topics and the value of an array of topic objects each with a slug and a description property", () => {
+  test("GET 200 - Responds with an object with the key of topics and the value of an array of topic objects each with a slug and a description property", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -38,7 +38,7 @@ describe("GET /api/topics", () => {
   });
 });
 describe("GET /api/articles", () => {
-  test("200 - Responds with an object with the key of articles and the value of an array of article objects each with properties of: author, title, article_id, topic, created_at, votes, article_img_url, comment_count", () => {
+  test("GET 200 - Responds with an object with the key of articles and the value of an array of article objects each with properties of: author, title, article_id, topic, created_at, votes, article_img_url, comment_count", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -70,7 +70,7 @@ describe("GET /api/articles", () => {
   });
 });
 describe("GET /api/users", () => {
-  test("Responds with an object with the key of users and the value of an array of objects with properties: username, name, avatar_url", () => {
+  test("GET 200: Responds with an object with the key of users and the value of an array of objects with properties: username, name, avatar_url", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -86,7 +86,7 @@ describe("GET /api/users", () => {
   });
 });
 describe("GET /api/articles/:article_id", () => {
-  test("Responds with an object with a key of article and the value of an article object with the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
+  test("GET 200: Responds with an object with a key of article and the value of an article object with the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -113,7 +113,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(typeof article_img_url).toBe("string");
       });
   });
-  test("Status: 400, responds with an error message if passed a bad article ID", () => {
+  test("GET 400: responds with an error message if passed a bad article ID", () => {
     return request(app)
       .get("/api/articles/notAnId")
       .expect(400)
@@ -121,7 +121,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("Status: 404, responds with an error message if passed an article ID not present", () => {
+  test("GET 404: responds with an error message if passed an article ID not present", () => {
     return request(app)
       .get("/api/articles/999")
       .expect(404)
@@ -130,7 +130,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
   describe("GET /api/articles/:article_id/comments", () => {
-    test("Responds with an object with the key of comments and the value of an array of comments for the given article_id, each one with properties: comment_id, votes, created_at, author, body, article_id. Most recent comments should be served first", () => {
+    test("GET 200: Responds with an object with the key of comments and the value of an array of comments for the given article_id, each one with properties: comment_id, votes, created_at, author, body, article_id. Most recent comments should be served first", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -150,7 +150,7 @@ describe("GET /api/articles/:article_id", () => {
           );
         });
     });
-    test("Responds with an empty array if article exists, but has no comments", () => {
+    test("GET 200: Responds with an empty array if article exists, but has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
@@ -159,7 +159,7 @@ describe("GET /api/articles/:article_id", () => {
           expect(comments).toEqual([]);
         });
     });
-    test("Status: 400, responds with an error message if passed a bad article ID", () => {
+    test("GET 400: Responds with an error message if passed a bad article ID", () => {
       return request(app)
         .get("/api/articles/NotAnId/comments")
         .expect(400)
@@ -167,7 +167,7 @@ describe("GET /api/articles/:article_id", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    test("Status: 404, responds with an error message if passed an article_id which does not exist", () => {
+    test("GET 404: Responds with an error message if passed an article_id which does not exist", () => {
       return request(app)
         .get("/api/articles/99/comments")
         .expect(404)
@@ -314,6 +314,32 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Article not found");
+      });
+  });
+});
+describe("DELETE /api/comments/:comment_id", () => {
+  test("DELETE 204: deletes the comment with the specified comment ID", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test("DELETE 400: Responds with an error message if comment ID is invalid", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("DELETE 404: Responds with an error message if comment ID does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment Not Found");
       });
   });
 });

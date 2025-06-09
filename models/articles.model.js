@@ -19,6 +19,18 @@ const selectArticles = () => {
     return rows;
   });
 };
+
+const checkArticleExists = (article_id) => {
+  const queryString = `SELECT * FROM articles WHERE article_id = $1;`;
+  return db.query(queryString, [article_id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `No article found`,
+      });
+    }
+  });
+};
 const selectArticleById = (article_id) => {
   const queryString = `SELECT * FROM articles WHERE article_id = $1;`;
   return db.query(queryString, [article_id]).then(({ rows }) => {
@@ -53,4 +65,9 @@ const updateVotesToArticle = (article_id, inc_votes) => {
   });
 };
 
-module.exports = { selectArticles, selectArticleById, updateVotesToArticle };
+module.exports = {
+  selectArticles,
+  selectArticleById,
+  updateVotesToArticle,
+  checkArticleExists,
+};

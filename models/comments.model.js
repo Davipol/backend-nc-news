@@ -1,16 +1,5 @@
 const db = require("../db/connection.js");
-
-const checkArticleExists = (article_id) => {
-  const queryString = `SELECT * FROM articles WHERE article_id = $1;`;
-  return db.query(queryString, [article_id]).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({
-        status: 404,
-        msg: `No article found`,
-      });
-    }
-  });
-};
+const { checkArticleExists } = require("./articles.model.js");
 
 const selectCommentsByArticleId = (article_id) => {
   return checkArticleExists(article_id).then(() => {
@@ -31,4 +20,21 @@ const insertCommentToArticle = (article_id, username, body) => {
       });
   });
 };
-module.exports = { selectCommentsByArticleId, insertCommentToArticle };
+
+const deleteCommentById = (comment_id) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1 returning *;`;
+  return db.query(queryString, [comment_id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "Comment Not Found",
+      });
+    }
+    return rows[0];
+  });
+};
+module.exports = {
+  selectCommentsByArticleId,
+  insertCommentToArticle,
+  deleteCommentById,
+};

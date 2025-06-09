@@ -7,6 +7,7 @@ const {
 const {
   selectCommentsByArticleId,
   insertCommentToArticle,
+  deleteCommentById,
 } = require("../models/comments.model.js");
 
 const getCommentsByArticleId = (request, response, next) => {
@@ -45,4 +46,19 @@ const postCommentToArticle = (request, response, next) => {
     });
 };
 
-module.exports = { getCommentsByArticleId, postCommentToArticle };
+const removeCommentById = (request, response, next) => {
+  const { comment_id } = request.params;
+  deleteCommentById(comment_id)
+    .then(() => {
+      response.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = {
+  getCommentsByArticleId,
+  postCommentToArticle,
+  removeCommentById,
+};
