@@ -69,6 +69,53 @@ describe("GET /api/articles", () => {
       });
   });
 });
+describe("GET /api/articles with sorting and ordering", () => {
+  test("GET 200: sorts articles by a valid column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("title", {
+          descending: true,
+        });
+      });
+  });
+  test("GET 200: sorts articles by votes in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("votes", { ascending: true });
+      });
+  });
+  test("GET 200: defaults to descending order if order not specified", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET 400: responds with error for invalid sort_by column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=notAValidColumn")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort_by query");
+      });
+  });
+  test("400: responds with error for invalid order value", () => {
+    return request(app)
+      .get("/api/articles?order=invalidOrder")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
+      });
+  });
+});
 describe("GET /api/users", () => {
   test("GET 200: Responds with an object with the key of users and the value of an array of objects with properties: username, name, avatar_url", () => {
     return request(app)

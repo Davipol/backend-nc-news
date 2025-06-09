@@ -1,6 +1,30 @@
 const db = require("../db/connection.js");
 
-const selectArticles = () => {
+const selectArticles = (sort_by = "created_at", order = "desc") => {
+  const validQueriesOptions = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "article_img_url",
+    "comment_count",
+  ];
+  const validOrderOptions = ["asc", "desc"];
+  if (!validQueriesOptions.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid sort_by query",
+    });
+  }
+  if (!validOrderOptions.includes(order.toLowerCase())) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid order query",
+    });
+  }
+
   const queryString = `
   SELECT 
   articles.author, 
@@ -14,7 +38,7 @@ const selectArticles = () => {
   FROM articles 
   LEFT JOIN comments ON articles.article_id = comments.article_id
   GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;`;
+  ORDER BY ${sort_by} ${order.toUpperCase()};`;
   return db.query(queryString).then(({ rows }) => {
     return rows;
   });
