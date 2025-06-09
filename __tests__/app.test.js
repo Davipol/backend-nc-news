@@ -169,31 +169,33 @@ describe("GET /api/users", () => {
   });
 });
 describe("GET /api/articles/:article_id", () => {
-  test("GET 200: Responds with an object with a key of article and the value of an article object with the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
+  test("GET 200: Responds with an object with a key of article and the value of an article object with the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url, comment_count", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body: rows }) => {
-        const article = rows.article;
+      .then(({ body }) => {
+        const article = body.article;
         expect(typeof article).toBe("object");
         const {
           author,
           title,
           article_id,
-          body,
+          body: articleBody,
           topic,
           created_at,
           votes,
           article_img_url,
+          comment_count,
         } = article;
         expect(typeof author).toBe("string");
         expect(typeof title).toBe("string");
         expect(typeof article_id).toBe("number");
-        expect(typeof body).toBe("string");
+        expect(typeof articleBody).toBe("string");
         expect(typeof topic).toBe("string");
         expect(typeof created_at).toBe("string");
         expect(typeof votes).toBe("number");
         expect(typeof article_img_url).toBe("string");
+        expect(typeof comment_count).toBe("number");
       });
   });
   test("GET 400: responds with an error message if passed a bad article ID", () => {

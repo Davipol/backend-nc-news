@@ -77,7 +77,14 @@ const checkArticleExists = (article_id) => {
   });
 };
 const selectArticleById = (article_id) => {
-  const queryString = `SELECT * FROM articles WHERE article_id = $1;`;
+  const queryString = `SELECT 
+      articles.*,
+      COUNT(comments.comment_id)::INT AS comment_count
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`;
+
   return db.query(queryString, [article_id]).then(({ rows }) => {
     const article = rows[0];
     if (!article) {

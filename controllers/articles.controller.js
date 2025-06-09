@@ -33,6 +33,7 @@ const getArticleById = (request, response, next) => {
         created_at,
         votes,
         article_img_url,
+        comment_count,
       }) => {
         response.status(200).send({
           article: {
@@ -44,6 +45,7 @@ const getArticleById = (request, response, next) => {
             created_at,
             votes,
             article_img_url,
+            comment_count,
           },
         });
       }
