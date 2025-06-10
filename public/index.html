@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>News Project API Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1>NEWS PROJECT API DOCUMENTATION</h1>
+      <h2>A Guide To Interact With News Project</h2>
+    </header>
+
+    <main>
+      <section>
+        <h2>Introduction</h2>
+        <p>
+          Welcome to News Project API documentation. This API allows the user to
+          access different articles, comments, slugs and to vote articles.
+        </p>
+      </section>
+
+      <section>
+        <h2>Authentication</h2>
+        <p></p>
+      </section>
+
+      <section>
+        <h2>General Endpoint</h2>
+        <ul>
+          <li>
+            <pre><code>GET /api</code></pre>
+            <h3>Description:</h3>
+            <p>
+              Serves up a json representation of all the available endpoints of
+              the api.
+            </p>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Articles Endpoints</h2>
+        <h3>Manage and retrieve news articles.</h3>
+        <ul>
+          <li>
+            <pre><code>GET /api/articles</code></pre>
+            <h3>Description:</h3>
+            <p>Serves an array of all articles.</p>
+            <h4>Example Response:</h4>
+            <pre>
+        
+{
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }</pre
+            >
+          </li>
+          <hr />
+          <li>
+            <pre><code>GET /api/articles/:article_id</code></pre>
+            <h3>Description</h3>
+            <p>
+              Serves a single article with an added comment_count property
+              containing the total comments
+            </p>
+            <h4>Example Request:</h4>
+            <pre>/api/articles/1</pre>
+            <h4>Example Response:</h4>
+            <pre>
+{
+      "article": {
+        "author": "butter_bridge",
+        "title": "Living in the shadow of a great man",
+        "article_id": 1,
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": 10
+      }
+    }</pre
+            >
+          </li>
+          <hr />
+          <li>
+            <pre><code>PATCH /api/articles/:article_id</code></pre>
+            <h3>Description</h3>
+            <p>Updates the vote count of an article by the specified amount.</p>
+            <h4>Example Request:</h4>
+            <pre>
+{
+      "inc_votes": 10
+    }</pre
+            >
+            <h4>Example Response:</h4>
+            <pre>
+{
+      "article": {
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }</pre
+            >
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>Comments Endpoints</h2>
+        <h3>Retrieve, add, delete comments.</h3>
+        <ul>
+          <li>
+            <pre><code>GET /api/articles/:article_id/comments</code></pre>
+            <h3>Description:</h3>
+            <p>
+              Serves all comments for a given article based on the article_id
+            </p>
+            <h4>Example Request:</h4>
+            <pre>/api/articles/1/comments"</pre>
+            <h4>Example Response:</h4>
+            <pre>
+{
+      "comments": [
+        {
+          "comment_id": 5,
+          "votes": 0,
+          "created_at": "2020-11-03T21:00:00.000Z",
+          "author": "icellusedkars",
+          "body": "I hate streaming noses",
+          "article_id": 1
+        }
+      ]
+    }</pre
+            >
+          </li>
+          <li>
+            <pre><code>POST /api/articles/:article_id/comments</code></pre>
+            <h3>Description:</h3>
+            <p>
+              Adds a comment to the specified article. Requires a request body
+              and with username and body fields.
+            </p>
+            <h4>Example Request:</h4>
+            <pre>
+{
+      "username": "butter_bridge",
+      "body": "This morning, I showered for nine minutes."
+    }</pre
+            >
+            <h4>Example Response:</h4>
+            <pre>
+{
+      "comment": {
+        "comment_id": 45,
+        "body": "This morning, I showered for nine minutes.",
+        "article_id": 2,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2020-11-03T21:00:00.000Z"
+      }
+    }</pre
+            >
+          </li>
+          <li>
+            <pre><code>DELETE /api/comments/:comment_id</code></pre>
+            <h3>Description:</h3>
+            <p>Deletes the comment with the specified comment_id.</p>
+            <h4>Example Request:</h4>
+            <pre>/api/comments/:comment_id</pre>
+            <h4>Example Response:</h4>
+            <pre>{}</pre>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <!--Title    /   navigation section   / 
+    sections for each endpoint
+    examplpe requests and responses
+    authentication reuirements
+    sidebar for navigation-->
+  </body>
+</html>
