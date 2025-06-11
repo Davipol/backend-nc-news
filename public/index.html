@@ -7,51 +7,245 @@
     <title>News Project API Documentation</title>
   </head>
   <body>
-    <header>
-      <h1>NEWS PROJECT API DOCUMENTATION</h1>
-      <h2>A Guide To Interact With News Project</h2>
-    </header>
-
-    <main>
-      <section>
-        <h2>Introduction</h2>
-        <p>
-          Welcome to News Project API documentation. This API allows the user to
-          access different articles, comments, slugs and to vote articles.
-        </p>
-      </section>
-
-      <section>
-        <h2>Authentication</h2>
-        <p></p>
-      </section>
-
-      <section>
-        <h2>General Endpoint</h2>
+    <div class="layout">
+      <nav class="sidebar">
         <ul>
-          <li>
-            <pre><code>GET /api</code></pre>
-            <h3>Description:</h3>
-            <p>
-              Serves up a json representation of all the available endpoints of
-              the api.
-            </p>
-          </li>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#endpoints-summary">Endpoints Overview</a></li>
+          <li><a href="#general">General Endpoint</a></li>
+          <li><a href="#topics">Topics Endpoint</a></li>
+          <li><a href="#users">Users Endpoint</a></li>
+          <li><a href="#articles">Articles Endpoints</a></li>
+          <li><a href="#comments">Comments Endpoints</a></li>
         </ul>
-      </section>
+      </nav>
 
-      <section>
-        <h2>Articles Endpoints</h2>
-        <h3>Manage and retrieve news articles.</h3>
-        <ul>
-          <li>
-            <pre><code>GET /api/articles</code></pre>
-            <h3>Description:</h3>
-            <p>Serves an array of all articles.</p>
-            <h4>Example Response:</h4>
-            <pre>
-        
-{
+      <div class="content">
+        <header>
+          <h1 id="main-title">NEWS PROJECT API DOCUMENTATION</h1>
+          <h2 id="main-subheader">A Guide To Interact With News Project</h2>
+        </header>
+        <hr />
+
+        <main>
+          <section id="introduction">
+            <h2 class="subheader">Introduction</h2>
+            <p>
+              Welcome to News Project API documentation. This API allows the
+              user to access different articles, comments, slugs and to vote
+              articles.
+            </p>
+            <p>
+              <strong>Note:</strong> This API is publicly accessible and does
+              not require authentication.
+            </p>
+            <ul>
+              <li>
+                <h3>Base URL</h3>
+                <p>
+                  All API requests should be prefixed with the following base
+                  URL:
+                </p>
+                <pre><code>https://news-project-p4c3.onrender.com</code></pre>
+              </li>
+            </ul>
+          </section>
+          <hr />
+          <hr />
+          <section id="endpoints-summary">
+            <h2 class="subheader">Endpoints Overview</h2>
+            <p>Here's a quick reference to all available API endpoints:</p>
+            <ul class="overview">
+              <li>
+                `GET /api` - Serves a JSON representation of all available
+                endpoints.
+              </li>
+              <li>`GET /api/topics` - Retrieves all topics.</li>
+              <li>
+                `GET /api/articles` - Retrieves all articles, with optional
+                filtering and sorting.
+              </li>
+              <li>`GET /api/users` - Retrieves all users.</li>
+              <li>
+                `GET /api/articles/:article_id` - Retrieves a single article by
+                ID, including its comment count.
+              </li>
+              <li>
+                `GET /api/articles/:article_id/comments` - Retrieves all
+                comments for a specific article.
+              </li>
+              <li>
+                `POST /api/articles/:article_id/comments` - Adds a new comment
+                to an article.
+              </li>
+              <li>
+                `PATCH /api/articles/:article_id` - Updates the vote count for
+                an article.
+              </li>
+              <li>
+                `DELETE /api/comments/:comment_id` - Deletes a specific comment.
+              </li>
+            </ul>
+            <p>Detailed documentation for each endpoint follows below.</p>
+            <hr />
+            <hr />
+          </section>
+          <section id="general">
+            <h2 class="endpoint-title">General Endpoint</h2>
+            <ul>
+              <li>
+                <h3>Get All Endpoints</h3>
+                <pre><code>GET /api</code></pre>
+                <h4>Description:</h4>
+                <p>
+                  Returns a full JSON object containing descriptions, example
+                  requests, and responses for every available API endpoint.
+                </p>
+
+                <h4>Example Response (partial):</h4>
+                <details>
+                  <summary>Click to expand</summary>
+                  <pre><code>{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/topics": {
+    "description": "serves an array of all topics",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
+    }
+  },
+  "GET /api/articles": {
+    "description": "serves an array of all articles",
+    "queries": ["sort_by(optional)", "order(optional)", "topic(optional)"]
+  },
+  ...
+}</code></pre>
+                </details>
+
+                <p>
+                  <strong>View full response:</strong>
+                  <a
+                    href="https://news-project-p4c3.onrender.com/api"
+                    target="_blank"
+                    >https://news-project-p4c3.onrender.com/api</a
+                  >
+                </p>
+              </li>
+            </ul>
+          </section>
+          <hr />
+          <hr />
+          <section id="topics">
+            <h2 class="endpoint-title">Topics Endpoint</h2>
+            <ul>
+              <li>
+                <h3>Get All Topics</h3>
+                <pre><code>GET /api/topics</code></pre>
+                <h4>Description:</h4>
+                <p>Serves an array of all topics</p>
+                <h4>Example Response:</h4>
+
+                <pre><code>{
+    "topics": [
+        { "slug": "football", "description": "Footie!" },
+        { "slug": "coding", "description": "Everything about code!" },
+        { "slug": "cooking", "description": "Recipes and culinary adventures" }
+    ]
+}</code>
+</pre>
+              </li>
+            </ul>
+          </section>
+          <hr />
+          <hr />
+          <section id="users">
+            <h2 class="endpoint-title">Users Endpoint</h2>
+            <ul>
+              <li>
+                <h3>Get All Users</h3>
+
+                <pre><code>GET /api/users</code></pre>
+                <h4>Description:</h4>
+                <p>Serves an array of all users</p>
+
+                <h4>Example Response (partial):</h4>
+                <details>
+                  <summary>Click to expand</summary>
+                  <pre><code>{
+      "users": [
+        {
+          "username": "lurker",
+          "name": "paul",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+        },
+        {
+          "username": "grumpy19",
+          "name": "Paul Grump",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+        },
+        ...
+      ]
+}</code>
+</pre>
+                </details>
+                <p>
+                  <strong>View full response:</strong>
+                  <a
+                    href="https://news-project-p4c3.onrender.com/api/users"
+                    target="_blank"
+                    >https://news-project-p4c3.onrender.com/api/users</a
+                  >
+                </p>
+              </li>
+            </ul>
+          </section>
+          <hr />
+          <hr />
+          <section id="articles">
+            <h2 class="endpoint-title">Articles Endpoints</h2>
+
+            <ul>
+              <li>
+                <h3>Get All Articles</h3>
+                <pre><code>GET /api/articles</code></pre>
+                <h4>Description:</h4>
+                <p>Serves an array of all articles.</p>
+                <div class="query-params">
+                  <h4>Optional Query Parameters:</h4>
+                  <ul>
+                    <li>
+                      <strong><code>sort_by</code></strong
+                      >: Sorts articles by a specific field.<br />
+                      Valid options: <code>created_at</code>,
+                      <code>votes</code>, <code>comment_count</code><br />
+                      <em>Default:</em> <code>created_at</code>
+                    </li>
+                    <li>
+                      <code>order</code>: Specifies the sorting direction.<br />
+                      Valid options: <code>asc</code>, <code>desc</code><br />
+                      <em>Default:</em> <code>desc</code>
+                    </li>
+                    <li>
+                      <strong><code>topic</code></strong
+                      >: Filters articles by topic slug.<br />
+                      Example: <code>coding</code>, <code>football</code>
+                    </li>
+                  </ul>
+                  <p>
+                    These parameters can be appended as query strings, for
+                    example:
+                  </p>
+                  <pre><code>/api/articles?sort_by=votes&order=asc&topic=coding</code></pre>
+                </div>
+                <h4>Example Response:</h4>
+                <pre><code>{
       "articles": [
         {
           "title": "Seafood substitutions are increasing",
@@ -62,22 +256,24 @@
           "comment_count": 6
         }
       ]
-    }</pre
-            >
-          </li>
-          <hr />
-          <li>
-            <pre><code>GET /api/articles/:article_id</code></pre>
-            <h3>Description</h3>
-            <p>
-              Serves a single article with an added comment_count property
-              containing the total comments
-            </p>
-            <h4>Example Request:</h4>
-            <pre>/api/articles/1</pre>
-            <h4>Example Response:</h4>
-            <pre>
-{
+    }</code>
+        
+</pre>
+              </li>
+              <hr />
+              <li>
+                <h3>Get Articles By ID</h3>
+                <pre><code>GET /api/articles/:article_id</code></pre>
+
+                <h4>Description:</h4>
+                <p>
+                  Serves a single article with an added comment_count property
+                  containing the total comments
+                </p>
+                <h4>Example Request:</h4>
+                <pre><code>/api/articles/1</code></pre>
+                <h4>Example Response:</h4>
+                <pre><code>{
       "article": {
         "author": "butter_bridge",
         "title": "Living in the shadow of a great man",
@@ -89,23 +285,25 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         "comment_count": 10
       }
-    }</pre
-            >
-          </li>
-          <hr />
-          <li>
-            <pre><code>PATCH /api/articles/:article_id</code></pre>
-            <h3>Description</h3>
-            <p>Updates the vote count of an article by the specified amount.</p>
-            <h4>Example Request:</h4>
-            <pre>
+    }</code>
+</pre>
+              </li>
+              <hr />
+
+              <li>
+                <h3>Add Votes To An Article</h3>
+                <pre><code>PATCH /api/articles/:article_id</code></pre>
+                <h4>Description:</h4>
+                <p>
+                  Updates the vote count of an article by the specified amount.
+                </p>
+                <h4>Example Request:</h4>
+                <pre><code>
 {
       "inc_votes": 10
-    }</pre
-            >
-            <h4>Example Response:</h4>
-            <pre>
-{
+    }</code></pre>
+                <h4>Example Response:</h4>
+                <pre><code>{
       "article": {
         "title": "Living in the shadow of a great man",
         "topic": "mitch",
@@ -115,26 +313,30 @@
         "votes": 100,
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
-    }</pre
-            >
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2>Comments Endpoints</h2>
-        <h3>Retrieve, add, delete comments.</h3>
-        <ul>
-          <li>
-            <pre><code>GET /api/articles/:article_id/comments</code></pre>
-            <h3>Description:</h3>
-            <p>
-              Serves all comments for a given article based on the article_id
-            </p>
-            <h4>Example Request:</h4>
-            <pre>/api/articles/1/comments"</pre>
-            <h4>Example Response:</h4>
-            <pre>
-{
+    }</code>
+</pre>
+              </li>
+            </ul>
+          </section>
+
+          <hr />
+          <hr />
+          <section id="comments">
+            <h2 class="endpoint-title">Comments Endpoints</h2>
+
+            <ul>
+              <li>
+                <h3>Get Comments By Article ID</h3>
+                <pre><code>GET /api/articles/:article_id/comments</code></pre>
+                <h4>Description:</h4>
+                <p>
+                  Serves all comments for a given article based on the
+                  article_id
+                </p>
+                <h4>Example Request:</h4>
+                <pre><code>/api/articles/1/comments</code></pre>
+                <h4>Example Response:</h4>
+                <pre><code>{
       "comments": [
         {
           "comment_id": 5,
@@ -145,26 +347,27 @@
           "article_id": 1
         }
       ]
-    }</pre
-            >
-          </li>
-          <li>
-            <pre><code>POST /api/articles/:article_id/comments</code></pre>
-            <h3>Description:</h3>
-            <p>
-              Adds a comment to the specified article. Requires a request body
-              and with username and body fields.
-            </p>
-            <h4>Example Request:</h4>
-            <pre>
-{
+    }</code>
+</pre>
+              </li>
+              <hr />
+
+              <li>
+                <h3>Insert A Comment To An Article</h3>
+                <pre><code>POST /api/articles/:article_id/comments</code></pre>
+                <h4>Description:</h4>
+                <p>
+                  Adds a comment to the specified article. Requires a request
+                  body and with username and body fields.
+                </p>
+                <h4>Example Request:</h4>
+                <pre><code>{
       "username": "butter_bridge",
       "body": "This morning, I showered for nine minutes."
-    }</pre
-            >
-            <h4>Example Response:</h4>
-            <pre>
-{
+    }</code>
+</pre>
+                <h4>Example Response:</h4>
+                <pre><code>{
       "comment": {
         "comment_id": 45,
         "body": "This morning, I showered for nine minutes.",
@@ -173,26 +376,36 @@
         "votes": 0,
         "created_at": "2020-11-03T21:00:00.000Z"
       }
-    }</pre
-            >
-          </li>
-          <li>
-            <pre><code>DELETE /api/comments/:comment_id</code></pre>
-            <h3>Description:</h3>
-            <p>Deletes the comment with the specified comment_id.</p>
-            <h4>Example Request:</h4>
-            <pre>/api/comments/:comment_id</pre>
-            <h4>Example Response:</h4>
-            <pre>{}</pre>
-          </li>
-        </ul>
-      </section>
-    </main>
+    }</code>
+</pre>
+              </li>
+              <hr />
 
-    <!--Title    /   navigation section   / 
-    sections for each endpoint
-    examplpe requests and responses
-    authentication reuirements
-    sidebar for navigation-->
+              <li>
+                <h3>Delete A Comment</h3>
+                <pre><code>DELETE /api/comments/:comment_id</code></pre>
+                <h4>Description:</h4>
+                <p>Deletes the comment with the specified comment_id.</p>
+                <h4>Example Request:</h4>
+                <pre><code>/api/comments/2</code></pre>
+                <h4>Example Response:</h4>
+                <pre><code>{}</code></pre>
+              </li>
+            </ul>
+          </section>
+        </main>
+      </div>
+    </div>
+    <footer class="footer">
+      <hr />
+      <p>© 2025 Davide Polizzi</p>
+      <p>
+        Open Source ·
+        <a href="https://github.com/Davipol/backend-nc-news" target="_blank"
+          >GitHub</a
+        >
+      </p>
+      <p>Last updated: June 11, 2025</p>
+    </footer>
   </body>
 </html>
