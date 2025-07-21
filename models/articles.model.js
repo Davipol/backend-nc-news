@@ -42,7 +42,7 @@ const selectArticles = (sort_by = "created_at", order = "desc", topic) => {
    `;
 
   if (topic) {
-    queryString += `WHERE articles.topic = $1 `;
+    queryString += ` WHERE articles.topic = $1 `;
     values.push(topic);
   }
 
