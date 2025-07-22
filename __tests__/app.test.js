@@ -330,6 +330,18 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+test("POST 404: Responds with error if user does not exist", () => {
+  return request(app)
+    .post("/api/articles/1/comments")
+    .send({
+      username: "non_existent_user",
+      body: "Trying to post with a fake user",
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("User not found");
+    });
+});
 describe("PATCH /api/articles/:article_id", () => {
   test("PATCH 200: Responds with the updated article with updated votes", () => {
     return request(app)

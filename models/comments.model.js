@@ -1,5 +1,6 @@
 const db = require("../db/connection.js");
 const { checkArticleExists } = require("./articles.model.js");
+const { checkUserExists } = require("./users.model.js");
 
 const selectCommentsByArticleId = (article_id) => {
   return checkArticleExists(article_id).then(() => {
@@ -11,7 +12,10 @@ const selectCommentsByArticleId = (article_id) => {
 };
 
 const insertCommentToArticle = (article_id, username, body) => {
-  return checkArticleExists(article_id).then(() => {
+  return Promise.all([
+    checkArticleExists(article_id),
+    checkUserExists(username),
+  ]).then(() => {
     const queryString = `INSERT INTO comments (author, body, article_id) VALUES($1, $2, $3) RETURNING *`;
     return db
       .query(queryString, [username, body, article_id])
