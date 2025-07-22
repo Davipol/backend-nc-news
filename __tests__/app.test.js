@@ -370,13 +370,15 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
-  test("PATCH 400: Responds with an error message if inc_votes is missing", () => {
+  test("PATCH 200: Responds with the unchanged article if no inc_votes is sent", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({})
-      .expect(400)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid input");
+        const article = body.article;
+        expect(article).toHaveProperty("article_id", 1);
+        expect(typeof article.votes).toBe("number");
       });
   });
   test("PATCH 400: Responds with an error message if article_id is not a number", () => {

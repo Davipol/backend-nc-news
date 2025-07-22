@@ -98,7 +98,17 @@ const selectArticleById = (article_id) => {
 };
 
 const updateVotesToArticle = (article_id, inc_votes) => {
-  if (inc_votes === undefined || typeof inc_votes !== "number") {
+  if (inc_votes === undefined) {
+    return db
+      .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 400, msg: "Article not found" });
+        }
+        return rows[0];
+      });
+  }
+  if (typeof inc_votes !== "number") {
     return Promise.reject({
       status: 400,
       msg: "Invalid input",
